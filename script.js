@@ -111,6 +111,22 @@ function getLearnerData(course, ag, submissions) {
         continue;
       }
 
+      let score = Number(submission.submission.score);
+
+      if(isNaN(score)){
+        continue;
+      }
+  
+      // Late Submittion = Deduct 10 percent of total points from their submission
+      if(submission.submission.submitted_at > assignment.due_at){
+        console.log("Late Penalty Applied");
+        score -= 0.1 * pointsPossible;
+        // So score doesn't go negative
+        if(score < 0){
+          score = 0;
+        }
+      }
+
     }
 
   }
