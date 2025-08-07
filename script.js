@@ -78,55 +78,41 @@ const LearnerSubmissions = [
 
 function getLearnerData(course, ag, submissions) {
   const result = [];
+  const today = "2025-08-07";
 
   // Validate Course ID matches Assignment Group ID
-  if(AssignmentGroup.course_id !== course.id){
+  if(ag.course_id !== course.id){
     throw new Error("Input Invalid: Mismatched Assignment Group to Course")
   }
 
-  // Using today's date
-  const today = "2025-08-07";
-
   // Loop Through Each Assignment
-  for(let assignment of AssignmentGroup.assignments){
-    const pointsPossible = Number(assignment.points_possible)
-    
-    // Skip if assignment not due yet
-    if(assignment.due_at > today){
-      console.log("Skipped because assignment is not due yet");
+  for(let assignment of ag.assignments){
+    if(!isAssignmentValid(assignment, today)){
       continue;
     }
 
-    // Skip if possible points is invalid / zero
-    if(isNaN(pointsPossible) || pointsPossible <= 0){
-      console.log("Skipped because points possible is invalid");
-      continue;
-    }
+    const asgnId = assignment.id;
+    const dueDate = assignment.due_at;
+    const pointsPossible = Number(assignment.points_possible);
 
     // Loop Through Each Submission
     for(let submission of submissions){
-      console.log(submission.assignment_id, assignment.id);
-      if(submission.assignment_id !== assignment.id){
-        console.log("Skipped because submission-id doesn't match assignment-id")
+      if(submission.assignment_id !== asgnId){
+        // console.log("Skipped because submission-id doesn't match assignment-id")
         continue;
       }
 
-      let score = Number(submission.submission.score);
+      const submittedAt = submission.submission.submitted_at;
+      let rawScore = Number(submission.submission.score);
 
-      if(isNaN(score)){
+      if(isNaN(rawScore)){
         continue;
       }
-  
-      // Late Submittion = Deduct 10 percent of total points from their submission
-      if(submission.submission.submitted_at > assignment.due_at){
-        console.log("Late Penalty Applied");
-        score -= 0.1 * pointsPossible;
-        // So score doesn't go negative
-        if(score < 0){
-          score = 0;
-        }
-      }
 
+      const late = isLate(submittedAt, dueDate);
+      const finalScore = applyLatePenalty(rawScore, pointsPossible, late);
+
+      console.log(finalScore);
     }
 
   }
@@ -139,3 +125,22 @@ const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 console.log(result);
 
 // Helper Functions -------------------------------------
+
+function isAssignmentValid(assignment, today){
+  const pointsPossible = Number(assignment.points_possible);
+  return assignment.due_at <= today && !isNaN(pointsPossible) && pointsPossible > 0;
+}
+
+function isLate(submittedAt, dueAt){
+  return submittedAt > dueAt;
+}
+
+function applyLatePenalty(score, pointsPossible, isLate){
+  if(isLate){
+    const penalty = 0.1 * pointsPossible;
+    score -= penalty;
+    return score < 0 ? 0: score;
+  }
+  return score;
+}
+
