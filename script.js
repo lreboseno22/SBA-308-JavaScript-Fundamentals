@@ -86,21 +86,31 @@ function getLearnerData(course, ag, submissions) {
 
   // Using today's date
   const today = "2025-08-07";
-  
+
   // Loop Through Each Assignment
   for(let assignment of AssignmentGroup.assignments){
     const pointsPossible = Number(assignment.points_possible)
     
     // Skip if assignment not due yet
     if(assignment.due_at > today){
-      console.log("Skipped");
+      console.log("Skipped because assignment is not due yet");
       continue;
     }
 
     // Skip if possible points is invalid / zero
     if(isNaN(pointsPossible) || pointsPossible <= 0){
-      console.log("Skipped");
+      console.log("Skipped because points possible is invalid");
       continue;
+    }
+
+    // Loop Through Each Submission
+    for(let submission of submissions){
+      console.log(submission.assignment_id, assignment.id);
+      if(submission.assignment_id !== assignment.id){
+        console.log("Skipped because submission-id doesn't match assignment-id")
+        continue;
+      }
+
     }
 
   }
