@@ -114,9 +114,12 @@ function getLearnerData(course, ag, submissions) {
 
       getLearner(learnerObj, learnerId);
 
+      const percentage = Number((finalScore / pointsPossible).toFixed(2));
+
       // Add data into learnerObj
       learnerObj[learnerId].totalEarned += finalScore;
       learnerObj[learnerId].totalPossible += pointsPossible;
+      learnerObj[learnerId].assignment[asgnId] = percentage;
     }
   }
   console.log(learnerObj);
