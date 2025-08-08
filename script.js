@@ -113,10 +113,13 @@ function getLearnerData(course, ag, submissions) {
       const finalScore = applyLatePenalty(rawScore, pointsPossible, late);
 
       getLearner(learnerObj, learnerId);
+
+      // Add data into learnerObj
+      learnerObj[learnerId].totalEarned += finalScore;
+      learnerObj[learnerId].totalPossible += pointsPossible;
     }
-
   }
-
+  console.log(learnerObj);
   return result;
 }
 
