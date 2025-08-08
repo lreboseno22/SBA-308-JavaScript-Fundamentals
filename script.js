@@ -77,7 +77,8 @@ const LearnerSubmissions = [
 ];
 
 function getLearnerData(course, ag, submissions) {
-  const result = [];
+  try {
+    const result = [];
   const learnerObj = {};
   const today = "2025-08-07";
 
@@ -114,7 +115,7 @@ function getLearnerData(course, ag, submissions) {
 
       getLearner(learnerObj, learnerId);
 
-      const percentage = Number((finalScore / pointsPossible).toFixed(2));
+      const percentage = Number((finalScore / pointsPossible).toFixed(3));
 
       // Add data into learnerObj
       learnerObj[learnerId].totalEarned += finalScore;
@@ -136,6 +137,10 @@ function getLearnerData(course, ag, submissions) {
   }
 
   return result;
+
+  } catch (error){
+    console.log(`There was an error`, error.message);
+  }
 }
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
