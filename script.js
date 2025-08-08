@@ -122,7 +122,14 @@ function getLearnerData(course, ag, submissions) {
       learnerObj[learnerId].assignment[asgnId] = percentage;
     }
   }
-  console.log(learnerObj);
+
+  // Looping through learnerObj
+  for(let learnerId in learnerObj){
+    const learner = learnerObj[learnerId];
+    console.log(`This is a learner:`, learner);
+  }
+
+
   return result;
 }
 
