@@ -119,16 +119,21 @@ function getLearnerData(course, ag, submissions) {
       // Add data into learnerObj
       learnerObj[learnerId].totalEarned += finalScore;
       learnerObj[learnerId].totalPossible += pointsPossible;
-      learnerObj[learnerId].assignment[asgnId] = percentage;
+      learnerObj[learnerId].assignments[asgnId] = percentage;
     }
   }
 
   // Looping through learnerObj
   for(let learnerId in learnerObj){
     const learner = learnerObj[learnerId];
-    console.log(`This is a learner:`, learner);
-  }
+    const average = Number((learner.totalEarned / learner.totalPossible).toFixed(3));
 
+    result.push({
+      id: learner.id,
+      avg: average,
+      ...learner.assignments
+    });
+  }
 
   return result;
 }
@@ -163,7 +168,7 @@ function getLearner(obj, learnerId){
       id: learnerId,
       totalEarned: 0,
       totalPossible: 0,
-      assignment: {}
+      assignments: {}
     };
   }
   return obj[learnerId];
