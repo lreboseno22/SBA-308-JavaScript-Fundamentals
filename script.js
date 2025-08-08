@@ -78,6 +78,7 @@ const LearnerSubmissions = [
 
 function getLearnerData(course, ag, submissions) {
   const result = [];
+  const learnerObj = {};
   const today = "2025-08-07";
 
   // Validate Course ID matches Assignment Group ID
@@ -98,10 +99,9 @@ function getLearnerData(course, ag, submissions) {
     // Loop Through Each Submission
     for(let submission of submissions){
       if(submission.assignment_id !== asgnId){
-        // console.log("Skipped because submission-id doesn't match assignment-id")
         continue;
       }
-
+      const learnerId = submission.learner_id;
       const submittedAt = submission.submission.submitted_at;
       let rawScore = Number(submission.submission.score);
 
@@ -112,7 +112,7 @@ function getLearnerData(course, ag, submissions) {
       const late = isLate(submittedAt, dueDate);
       const finalScore = applyLatePenalty(rawScore, pointsPossible, late);
 
-      console.log(finalScore);
+      getLearner(learnerObj, learnerId);
     }
 
   }
@@ -144,3 +144,14 @@ function applyLatePenalty(score, pointsPossible, isLate){
   return score;
 }
 
+function getLearner(obj, learnerId){
+  if(!obj[learnerId]){
+    obj[learnerId] = {
+      id: learnerId,
+      totalEarned: 0,
+      totalPossible: 0,
+      assignment: {}
+    };
+  }
+  return obj[learnerId];
+}
