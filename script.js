@@ -78,7 +78,7 @@ const LearnerSubmissions = [
 
 function getLearnerData(course, ag, submissions) {
   try {
-    const result = [];
+  const result = [];
   const learnerObj = {};
   const today = "2025-08-07";
 
@@ -163,8 +163,9 @@ function applyLatePenalty(score, pointsPossible, isLate){
     const penalty = 0.1 * pointsPossible;
     score -= penalty;
     return score < 0 ? 0: score;
+  } else {
+     return score;
   }
-  return score;
 }
 
 function getLearner(obj, learnerId){
@@ -175,6 +176,7 @@ function getLearner(obj, learnerId){
       totalPossible: 0,
       assignments: {}
     };
+  } else {
+    return obj[learnerId];
   }
-  return obj[learnerId];
 }
